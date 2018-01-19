@@ -17,6 +17,13 @@ window.Vue = require('vue');
 
 Vue.component('example', require('./components/Example.vue'));
 
-const app = new Vue({
-    el: '#app'
-});
+const app = new Vue({ 
+    el: '#app', 
+    mounted() { 
+    	console.log('hit');
+        Echo.channel('testChannel') 
+            .listen('TestEvent', (e) => { 
+                console.log(e); 
+            }); 
+    } 
+}); 

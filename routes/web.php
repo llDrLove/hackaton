@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+use App\Events\TestEvent; 
+Route::get('/event', function () { 
+    event(new TestEvent('Hey how are you !')); 
+}); 

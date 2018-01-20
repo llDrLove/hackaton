@@ -21,6 +21,4 @@ Route::get('/event', function () {
 }); 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/auth', 'AuthController@index');
+Route::post('/home', 'HomeController@index')->name('home');

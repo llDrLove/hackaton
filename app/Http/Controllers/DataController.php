@@ -16,9 +16,8 @@ class DataController extends Controller
 	 * Handle the incoming data from the receptor
 	 */
     // public function index(DataRequest $request, User $user)
-    public function index(DataRequest $request, User $user, $numberOne, $numberTwo)
+    public function index(DataRequest $request, User $user)
     {
-    	dd($numberOne);
     	try {
     		$requestData = $request->all();
     		$data = new Data();
@@ -28,7 +27,10 @@ class DataController extends Controller
     		DB::table('user_data')->insert(
 			    ['user_id' => $user->id, 'data_id' => $data->id]
 			);
-			event(new TestEvent('Hey how are you !'));
+			event(new TestEvent([
+				'userId' => $user->id,
+				'data' => $data 
+			]));
     		return HttpHelper::json(['message' => 'The data was saved successfully'], 200);
     	} catch (Exception $e) {
     		return HttpHelper::json(['message' => 'An error occured !'], 500);

@@ -18,7 +18,7 @@ class AuthController extends Controller
     	try {
     		if (Auth::attempt(['email' => $request['email'], 'password' => $request['password']])) {
     			return HttpHelper::json([
-    				'userId' => Auth::user()
+    				'user' => Auth::user()
     			]);
     		} else {
     			$user = new User();
@@ -27,7 +27,7 @@ class AuthController extends Controller
     			$user->password = bcrypt($request['password']);
     			$user->saveOrFail();
     			return HttpHelper::json([
-    				'userId' => $user->id,
+    				'user' => $user,
     				'message' => 'Account created !'
     			], 200);
     		}	

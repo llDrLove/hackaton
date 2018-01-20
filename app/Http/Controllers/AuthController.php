@@ -25,6 +25,7 @@ class AuthController extends Controller
     			$user->name = '';
     			$user->email = $request['email'];
     			$user->password = bcrypt($request['password']);
+                $user->is_patient = $request['isPatient'];
     			$user->saveOrFail();
     			return HttpHelper::json([
     				'user' => $user,

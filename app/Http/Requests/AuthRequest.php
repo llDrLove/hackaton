@@ -24,6 +24,7 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
+            'isPatient'=> 'required|boolean',
             'email'    => 'required|email|max:255',
             'password' => 'required|min:6',
         ];

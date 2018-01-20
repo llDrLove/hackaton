@@ -19,3 +19,8 @@ use App\Events\TestEvent;
 Route::get('/event', function () { 
     event(new TestEvent('Hey how are you !')); 
 }); 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/auth', 'AuthController@index');

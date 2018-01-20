@@ -17,10 +17,6 @@ Route::post('/auth', 'AuthController@index');
 
 Route::post('/data/{user}', 'DataController@index');
 
-Route::post('/test', function() {
-	return 'Test';
-});	
-
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

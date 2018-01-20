@@ -22,7 +22,7 @@ class AuthController extends Controller
     			]);
     		} else {
     			$user = new User();
-    			$user->name = $request['name'];
+    			$user->name = '';
     			$user->email = $request['email'];
     			$user->password = bcrypt($request['password']);
     			$user->saveOrFail();
@@ -32,7 +32,7 @@ class AuthController extends Controller
     			], 200);
     		}	
 		} catch (Exception $e) {
-			return HttpHelper::json(['message' => 'An error occured!'], 500);
+			return HttpHelper::json(['message' => 'An error occured!'], 401);
 		}	
     }
 }

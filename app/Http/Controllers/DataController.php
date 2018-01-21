@@ -28,7 +28,7 @@ class DataController extends Controller
     		DB::table('user_data')->insert(
 			    ['user_id' => $user->id, 'data_id' => $data->id]
 			);
-            if (DB::table('data')->where('was_broadcast', 0)->count() >= 50) {
+            if (DB::table('data')->where('was_broadcast', 0)->count() >= 2) {
                 $notBroadcastDataQuery = DB::table('data')->where('was_broadcast', 0);
                 $tempData = $notBroadcastDataQuery->select('id', 'spo2', 'pulse', 'created_at')->get();
                 $notBroadcastDataQuery->update(['was_broadcast' => 1]);

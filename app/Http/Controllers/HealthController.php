@@ -16,8 +16,7 @@ class HealthController extends Controller
     public function update(Request $request, User $user)
     {
     	try {
-            $resp = Response::where('user_id', $user->id)->first();
-            if (!$user->is_patient || ($user->in_danger && !$resp)) {
+            if (!$user->is_patient || $user->in_danger) {
                 throw new Exception('You need to be a patient or not in danger!');
             }
     		$user->in_danger = 1;

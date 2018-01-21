@@ -39,10 +39,11 @@ class DataController extends Controller
             $userToBroadCastOnPersonnalChannel = Response::where('user_id', $user->id)
                                                          ->where('has_responded', 1)
                                                          ->first();
+            $julien = User::find($userToBroadCastOnPersonnalChannel->id);
             if ($userToBroadCastOnPersonnalChannel) {
                 event(new Repondant([
                     'type' => 'LIVE_FEED',
-                    'user' => $userToBroadCastOnPersonnalChannel->toArray(),
+                    'user' => $julien->toArray(),
                     'payload' => [
                         'data' => $responseData
                     ]

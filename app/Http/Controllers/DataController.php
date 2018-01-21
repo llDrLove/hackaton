@@ -23,6 +23,7 @@ class DataController extends Controller
     		$data = new Data();
     		$data->spo2 = floatval($requestData['spo2']) * 100;
     		$data->pulse = floatval($requestData['pulse']) * 100;
+            $data->user_id = $user->id;
     		$data->saveOrFail();
 
     		DB::table('user_data')->insert(
@@ -30,7 +31,7 @@ class DataController extends Controller
 			);
             if (DB::table('data')->where('was_broadcast', 0)->count() >= env('DATA_CHUNK_SIZE')) {
                 $notBroadcastDataQuery = DB::table('data')->where('was_broadcast', 0);
-                $tempData = $notBroadcastDataQuery->select('id', 'spo2', 'pulse', 'created_at')->get();
+                $tempData = $notBroadcastDataQuery->select('id', 'spo2', 'pulse', 'created_at', 'user_id')->get();
                 $notBroadcastDataQuery->update(['was_broadcast' => 1]);
                 event(new TestEvent([
                     'data' => $tempData  

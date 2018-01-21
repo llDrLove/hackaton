@@ -40,7 +40,7 @@ class DataController extends Controller
                                                          ->where('has_responded', 1)
                                                          ->first();
             if ($userToBroadCastOnPersonnalChannel) {
-                $julien = User::find($userToBroadCastOnPersonnalChannel->user_id);
+                $julien = User::find($userToBroadCastOnPersonnalChannel->respondant_id);
                 event(new Repondant([
                     'type' => 'LIVE_FEED',
                     'user' => $julien->toArray(),

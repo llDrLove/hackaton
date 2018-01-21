@@ -49,7 +49,9 @@ class HealthController extends Controller
                 'payload' => [
                     'userId' => $user->id,
                     'distance_km' => $closerRespondant['distance'],
-                    'response_id' => $response->id
+                    'response_id' => $response->id,
+                    'user_latitude' => $user->latitude,
+                    'user_longitude' => $user->user_longitude
                 ]
             ]));
     		return HttpHelper::json(['message' => 'The user has been updated successfully !']);

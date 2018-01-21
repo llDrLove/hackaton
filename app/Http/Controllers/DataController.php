@@ -24,13 +24,18 @@ class DataController extends Controller
     		$data->spo2 = floatval($requestData['spo2']) * 100;
     		$data->pulse = floatval($requestData['pulse']) * 100;
     		$data->saveOrFail();
+
     		DB::table('user_data')->insert(
 			    ['user_id' => $user->id, 'data_id' => $data->id]
 			);
-			event(new TestEvent([
-				'userId' => $user->id,
-				'data' => $data 
-			]));
+            if (DB::table('data')->where('was_broadcast', 0)->count() >= 50) {
+                $notBroadcastDataQuery = DB::table('data')->where('was_broadcast', 0);
+                $tempData = $notBroadcastDataQuery->select('id', 'spo2', 'pulse', 'created_at')->get();
+                $notBroadcastDataQuery->update(['was_broadcast' => 1]);
+                event(new TestEvent([
+                    'data' => $tempData  
+                ]));
+            }
     		return HttpHelper::json(['message' => 'The data was saved successfully'], 200);
     	} catch (Exception $e) {
     		return HttpHelper::json(['message' => 'An error occured !'], 500);

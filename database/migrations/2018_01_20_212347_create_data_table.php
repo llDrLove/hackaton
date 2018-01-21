@@ -17,6 +17,7 @@ class CreateDataTable extends Migration
             $table->increments('id');
             $table->integer('spo2');
             $table->integer('pulse');
+            $table->boolean('was_broadcast')->default(0);
             $table->timestamps();
         });
     }

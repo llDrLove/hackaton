@@ -88,8 +88,7 @@ class HealthController extends Controller
     public function accept(Request $request, Response $response)
     {
         try {
-            $response->has_responded = 1;
-            $response->saveOrFail();
+            Response::where('user_id', $response->user_id)->delete();
             return HttpHelper::json([
                 'message' => 'The responses has been accepted by the respondant!',
             ], 200);
@@ -98,5 +97,10 @@ class HealthController extends Controller
                 'message' => $e->getMessage(),
             ], 200);
         }
+    }
+
+    public function decline(Request $request , Response $response)
+    {
+
     }
 }

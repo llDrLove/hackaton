@@ -11,6 +11,8 @@ use App\Algorithms\Helpers\HttpHelper;
 
 class HealthController extends Controller
 {
+    const DIVIDER = 1000000;
+
     public function update(Request $request, User $user)
     {
     	try {
@@ -20,17 +22,17 @@ class HealthController extends Controller
     		$user->in_danger = 1;
     		$user->saveOrFail();
             $respondants = User::where('is_patient', 0)->get();
-            $closerRespondant['distance'] = $this->distance($user->latitude / 1000000, 
-                                                $user->longitude / 1000000, 
-                                                $respondants[0]->latitude / 1000000, 
-                                                $respondants[0]->longitude / 1000000, 
+            $closerRespondant['distance'] = $this->distance($user->latitude / self::DIVIDER, 
+                                                $user->longitude / self::DIVIDER, 
+                                                $respondants[0]->latitude / self::DIVIDER, 
+                                                $respondants[0]->longitude / self::DIVIDER, 
                                                 'K');
             $closerRespondant['respondant'] = $respondants[0];
             foreach ($respondants as $key => $respondant) {
-                $distance = $this->distance($user->latitude / 1000000,
-                                    $user->longitude / 1000000,
-                                    $respondant->latitude / 1000000,
-                                    $respondant->longitude / 1000000,
+                $distance = $this->distance($user->latitude / self::DIVIDER,
+                                    $user->longitude / self::DIVIDER,
+                                    $respondant->latitude / self::DIVIDER,
+                                    $respondant->longitude / self::DIVIDER,
                                     'K');
                 var_dump($distance);
                 if ($respondant->latitude && 
@@ -51,8 +53,8 @@ class HealthController extends Controller
                     'userId' => $user->id,
                     'distance_km' => $closerRespondant['distance'],
                     'response_id' => $response->id,
-                    'user_latitude' => $user->latitude / 1000000,
-                    'user_longitude' => $user->longitude / 1000000
+                    'user_latitude' => $user->latitude / self::DIVIDER,
+                    'user_longitude' => $user->longitude / self::DIVIDER
                 ]
             ]));
     		return HttpHelper::json(['message' => 'The user has been updated successfully !']);

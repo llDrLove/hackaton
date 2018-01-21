@@ -9,6 +9,7 @@ use App\Algorithms\Helpers\HttpHelper;
 
 class LocationController extends Controller
 {
+    const DIVIDER = 1000000;
 	/**
 	 * Update the location of the user
 	 */
@@ -16,8 +17,8 @@ class LocationController extends Controller
     {
     	try {
     		$data = $request->all();
-    		$user->latitude  = $data['latitude'] * 1000000;
-    		$user->longitude = $data['longitude'] * 1000000;
+    		$user->latitude  = $data['latitude'] * self::DIVIDER;
+    		$user->longitude = $data['longitude'] * self::DIVIDER;
     		$user->saveOrFail();
     		return HttpHelper::json(['message' => 'The location was saved successfully ! :)'], 201);
     	} catch (Exception $e) {

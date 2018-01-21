@@ -84,4 +84,19 @@ class HealthController extends Controller
             return $miles;
           }
     }
+
+    public function accept(Request $request, Response $response)
+    {
+        try {
+            $response->has_responded = 1;
+            $response->saveOrFail();
+            return HttpHelper::json([
+                'message' => 'The responses has been accepted by the respondant!',
+            ], 200);
+        } catch (Exception $e) {
+            return HttpHelper::json([
+                'message' => $e->getMessage(),
+            ], 200);
+        }
+    }
 }

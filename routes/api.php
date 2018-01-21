@@ -23,6 +23,8 @@ Route::post('/health/{user}', 'HealthController@update');
 
 Route::post('/health/restore/{user}', 'HealthController@restore');
 
+Route::post('/health/accept/{response}', 'HealthController@accept');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

@@ -45,7 +45,8 @@ class DataController extends Controller
                     'type' => 'LIVE_FEED',
                     'user' => $julien->toArray(),
                     'payload' => [
-                        'data' => $responseData
+                        'pulse' => $responseData['pulse'],
+                        'spo2'  => $responseData['spo2']
                     ]
                 ]));
             }

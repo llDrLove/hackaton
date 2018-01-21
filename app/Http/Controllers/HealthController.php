@@ -48,7 +48,8 @@ class HealthController extends Controller
                 'user' => $closerRespondant['respondant'],
                 'payload' => [
                     'userId' => $user->id,
-                    'distance_km' => $closerRespondant['distance']
+                    'distance_km' => $closerRespondant['distance'],
+                    'response_id' => $closerRespondant['respondant']['id']
                 ]
             ]));
     		return HttpHelper::json(['message' => 'The user has been updated successfully !']);
@@ -90,7 +91,7 @@ class HealthController extends Controller
         try {
             Response::where('user_id', $response->user_id)->delete();
             return HttpHelper::json([
-                'message' => 'The responses has been accepted by the respondant!',
+                'message' => 'The response has been accepted by the respondant!',
             ], 200);
         } catch (Exception $e) {
             return HttpHelper::json([
@@ -101,6 +102,50 @@ class HealthController extends Controller
 
     public function decline(Request $request , Response $response)
     {
-
+        try {
+            $alreadyCalledRespondants = Response::select('respondant_id')->where('user_id', $response->user_id)->get();
+            $ids = [];
+            foreach ($alreadyCalledRespondants as $key => $respondant) {
+                array_push($ids, $respondant['respondant_id']);
+            }
+            $respondants = User::where('id', '!=', $ids)->where('is_patient', 0)->get();
+            if (count($respondants) == 0) {
+                throw new Exception('No respondant left! Calling the emergency');
+            }
+            $user = User::where('id', $response->user_id)->first();
+            $closerRespondant['distance'] = $this->distance($user->latitude, 
+                                                $user->longitude, 
+                                                $respondants[0]->latitude, 
+                                                $respondants[0]->longitude, 
+                                                'K');
+            $closerRespondant['respondant'] = $respondants[0];
+            foreach ($respondants as $key => $respondant) {
+                $distance = $this->distance($user->latitude,
+                                    $user->longitude,
+                                    $respondant->latitude,
+                                    $respondant->longitude,
+                                    'K');
+                if ($respondant->latitude && 
+                    $respondant->longitude &&
+                    $distance < $closerRespondant['distance']) {
+                    $closerRespondant['distance'] = $distance;
+                    $closerRespondant['respondant'] = $respondant;
+                }
+            }
+            $response = new Response();
+            $response->user_id = $user->id;
+            $response->respondant_id = $closerRespondant['respondant']['id'];
+            $response->saveOrFail();
+            event(new Repondant([
+                'type' => 'DYING',
+                'user' => $closerRespondant['respondant'],
+                'payload' => [
+                    'userId' => $response->user_id,
+                    'distance_km' => $closerRespondant['distance']
+                ]
+            ]));
+        } catch (Exception $e) {
+            return HttpHelper::json(['message' => $e->getMessage()], 500);
+        }
     }
 }

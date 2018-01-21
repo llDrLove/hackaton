@@ -41,6 +41,13 @@ class HealthController extends Controller
                     $closerRespondant['respondant'] = $respondant;
                 }
             }
+            if (Response::where('user_id', $user->id)
+                    ->where('has_responded', 1)
+                    ->where('respondant_id', $closerRespondant['respondant']['id'])
+                    ->count() > 0) {
+                throw new Exception('Already processing...');
+            }
+
             $response = new Response();
             $response->user_id = $user->id;
             $response->respondant_id = $closerRespondant['respondant']['id'];

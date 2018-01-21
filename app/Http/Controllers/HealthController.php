@@ -15,23 +15,24 @@ class HealthController extends Controller
     {
     	try {
             if (!$user->is_patient || $user->in_danger) {
-                throw new Exception('You need to be a patient!');
+                throw new Exception('You need to be a patient or not in danger!');
             }
     		$user->in_danger = 1;
     		$user->saveOrFail();
             $respondants = User::where('is_patient', 0)->get();
-            $closerRespondant['distance'] = $this->distance($user->latitude, 
-                                                $user->longitude, 
-                                                $respondants[0]->latitude, 
-                                                $respondants[0]->longitude, 
+            $closerRespondant['distance'] = $this->distance($user->latitude / 1000000, 
+                                                $user->longitude / 1000000, 
+                                                $respondants[0]->latitude / 1000000, 
+                                                $respondants[0]->longitude / 1000000, 
                                                 'K');
             $closerRespondant['respondant'] = $respondants[0];
             foreach ($respondants as $key => $respondant) {
-                $distance = $this->distance($user->latitude,
-                                    $user->longitude,
-                                    $respondant->latitude,
-                                    $respondant->longitude,
+                $distance = $this->distance($user->latitude / 1000000,
+                                    $user->longitude / 1000000,
+                                    $respondant->latitude / 1000000,
+                                    $respondant->longitude / 1000000,
                                     'K');
+                var_dump($distance);
                 if ($respondant->latitude && 
                     $respondant->longitude &&
                     $distance < $closerRespondant['distance']) {

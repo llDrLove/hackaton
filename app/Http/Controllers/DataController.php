@@ -40,10 +40,9 @@ class DataController extends Controller
                                                          ->where('has_responded', 1)
                                                          ->first();
             if ($userToBroadCastOnPersonnalChannel) {
-                var_dump($userToBroadCastOnPersonnalChannel);
                 event(new Repondant([
                     'type' => 'LIVE_FEED',
-                    'user' => ['user' => $userToBroadCastOnPersonnalChannel],
+                    'user' => $userToBroadCastOnPersonnalChannel->toArray(),
                     'payload' => [
                         'data' => $responseData
                     ]

@@ -67,7 +67,7 @@ class HealthController extends Controller
         try {
             $user->in_danger = 0;
             $user->saveOrFail();
-            Repondant::where('user_id', $user->id)->delete();
+            Response::where('user_id', $user->id)->delete();
             return HttpHelper::json(['message' => 'The user has been updated successfully !']);
         } catch (Exception $e) {
             return HttpHelper::json(['message' => 'An error occured ! :('], 500);

@@ -13,13 +13,37 @@ class HealthController extends Controller
     public function update(Request $request, User $user)
     {
     	try {
+            if (!$user->is_patient) {
+                throw new Exception('You need to be a patient!');
+            }
     		$user->in_danger = 1;
     		$user->saveOrFail();
+            $respondants = User::where('is_patient', 0)->get();
+            $closerRespondant['distance'] = $this->distance($user->latitude, 
+                                                $user->longitude, 
+                                                $respondants[0]->latitude, 
+                                                $respondants[0]->longitude, 
+                                                'K');
+            $closerRespondant['respondant'] = $respondants[0];
+            foreach ($respondants as $key => $respondant) {
+                $distance = $this->distance($user->latitude,
+                                    $user->longitude,
+                                    $respondant->latitude,
+                                    $respondant->longitude,
+                                    'K');
+                if ($respondant->latitude && 
+                    $respondant->longitude &&
+                    $distance < $closerRespondant['distance']) {
+                    $closerRespondant['distance'] = $distance;
+                    $closerRespondant['respondant'] = $respondant;
+                }
+            }
             event(new Repondant([
                 'type' => 'DYING',
-                'user' => $user,
+                'user' => $closerRespondant['respondant'],
                 'payload' => [
-                    'userId' => $user->id
+                    'userId' => $user->id,
+                    'distance_km' => $closerRespondant['distance']
                 ]
             ]));
     		return HttpHelper::json(['message' => 'The user has been updated successfully !']);
@@ -37,5 +61,22 @@ class HealthController extends Controller
         } catch (Exception $e) {
             return HttpHelper::json(['message' => 'An error occured ! :('], 500);
         }
+    }
+
+    private function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+      $theta = $lon1 - $lon2;
+      $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+      $dist = acos($dist);
+      $dist = rad2deg($dist);
+      $miles = $dist * 60 * 1.1515;
+      $unit = strtoupper($unit);
+
+      if ($unit == "K") {
+        return ($miles * 1.609344);
+      } else if ($unit == "N") {
+          return ($miles * 0.8684);
+        } else {
+            return $miles;
+          }
     }
 }

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use DB;
 use App\User;
 use App\Data;
+use App\Response;
 use Exception;
 use App\Events\TestEvent; 
+use App\Events\Repondant; 
 use Illuminate\Http\Request;
 use App\Http\Requests\DataRequest;
 use App\Algorithms\Helpers\HttpHelper;
@@ -34,6 +36,19 @@ class DataController extends Controller
                     ['user_id' => $user->id, 'data_id' => $data->id]
                 );
             }
+            $userToBroadCastOnPersonnalChannel = Response::where('user_id', $user->id)
+                                                         ->where('has_responded', 1)
+                                                         ->first();
+            if ($userToBroadCastOnPersonnalChannel) {
+                event(new Repondant([
+                    'type' => 'LIVE_FEED',
+                    'user' => $userToBroadCastOnPersonnalChannel,
+                    'payload' => [
+                        'data' => $responseData
+                    ]
+                ]));
+            }
+
             event(new TestEvent([
                 'userId' => $user->id,
                 'data' => $responseData  

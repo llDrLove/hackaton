@@ -20,23 +20,23 @@ class DataController extends Controller
     {
     	try {
     		$requestData = $request->all();
-    		$data = new Data();
-    		$data->spo2 = floatval($requestData['spo2']) * 100;
-    		$data->pulse = floatval($requestData['pulse']) * 100;
-            $data->user_id = $user->id;
-    		$data->saveOrFail();
-
-    		DB::table('user_data')->insert(
-			    ['user_id' => $user->id, 'data_id' => $data->id]
-			);
-            if (DB::table('data')->where('was_broadcast', 0)->count() >= env('DATA_CHUNK_SIZE')) {
-                $notBroadcastDataQuery = DB::table('data')->where('was_broadcast', 0);
-                $tempData = $notBroadcastDataQuery->select('id', 'spo2', 'pulse', 'created_at', 'user_id')->get();
-                $notBroadcastDataQuery->update(['was_broadcast' => 1]);
-                event(new TestEvent([
-                    'data' => $tempData  
-                ]));
+            $requestData['pulse'] = explode(',', $request->all()['pulse']);
+            $requestData['spo2'] = explode(',', $request->all()['spo2']);
+            $responseData = [];
+            for($i = 0; $i < count($requestData['pulse']); $i++) {
+                $data = new Data();
+                $data->spo2 = floatval($requestData['spo2'][$i]) * 100;
+                $data->pulse = floatval($requestData['pulse'][$i]) * 100;
+                $data->saveOrFail();
+                array_push($responseData, $data);
+                DB::table('user_data')->insert(
+                    ['user_id' => $user->id, 'data_id' => $data->id]
+                );
             }
+            event(new TestEvent([
+                'userId' => $user->id,
+                'data' => $responseData  
+            ]));
     		return HttpHelper::json(['message' => 'The data was saved successfully'], 200);
     	} catch (Exception $e) {
     		return HttpHelper::json(['message' => 'An error occured !'], 500);

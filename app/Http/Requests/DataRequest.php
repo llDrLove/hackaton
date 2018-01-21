@@ -24,8 +24,8 @@ class DataRequest extends FormRequest
     public function rules()
     {
         return [
-            'pulse' => 'required|numeric',
-            'spo2'  => 'required|numeric|between:0,100.00',
+            'pulse.*' => 'required|numeric',
+            'spo2.*'  => 'required|numeric|between:0,100.00',
         ];
     }
 }

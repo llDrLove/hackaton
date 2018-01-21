@@ -14,7 +14,7 @@ class HealthController extends Controller
     public function update(Request $request, User $user)
     {
     	try {
-            if (!$user->is_patient && !$user->in_danger) {
+            if (!$user->is_patient && $user->in_danger) {
                 throw new Exception('You need to be a patient!');
             }
     		$user->in_danger = 1;

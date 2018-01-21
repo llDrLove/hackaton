@@ -21,8 +21,8 @@ class DataController extends Controller
     {
     	try {            
     		$requestData = $request->all();
-            $requestData['pulse'] = explode(',', $request->all()['pulse']);
-            $requestData['spo2'] = explode(',', $request->all()['spo2']);
+            $requestData['pulse'] = explode('|', $request->all()['pulse']);
+            $requestData['spo2'] = explode('|', $request->all()['spo2']);
             $responseData = [];
             for($i = 0; $i < count($requestData['pulse']); $i++) {
                 $data = new Data();

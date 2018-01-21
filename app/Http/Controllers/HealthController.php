@@ -94,7 +94,8 @@ class HealthController extends Controller
     public function accept(Request $request, Response $response)
     {
         try {
-            Response::where('user_id', $response->user_id)->delete();
+            $response->has_responded = 1;
+            $response->saveOrFail();
             return HttpHelper::json([
                 'message' => 'The response has been accepted by the respondant!',
             ], 200);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Exception;
+use App\Response;
 use App\Events\Repondant;
 use Illuminate\Http\Request;
 use App\Algorithms\Helpers\HttpHelper;
@@ -13,7 +14,7 @@ class HealthController extends Controller
     public function update(Request $request, User $user)
     {
     	try {
-            if (!$user->is_patient) {
+            if (!$user->is_patient && !$user->in_danger) {
                 throw new Exception('You need to be a patient!');
             }
     		$user->in_danger = 1;
@@ -38,6 +39,10 @@ class HealthController extends Controller
                     $closerRespondant['respondant'] = $respondant;
                 }
             }
+            $response = new Response();
+            $response->user_id = $user->id;
+            $response->respondant_id = $closerRespondant['respondant']['id'];
+            $response->saveOrFail();
             event(new Repondant([
                 'type' => 'DYING',
                 'user' => $closerRespondant['respondant'],

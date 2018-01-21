@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->integer('latitude')->nullable();
             $table->integer('longitude')->nullable();
             $table->boolean('is_patient')->default(1);
+            $table->boolean('in_danger')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -21,7 +21,7 @@ class DataController extends Controller
     // public function index(DataRequest $request, User $user)
     public function index(DataRequest $request, User $user)
     {
-    	try {            
+    	try {      
     		$requestData = $request->all();
             $requestData['pulse'] = explode('|', $request->all()['pulse']);
             $requestData['spo2'] = explode('|', $request->all()['spo2']);
@@ -39,8 +39,8 @@ class DataController extends Controller
             $userToBroadCastOnPersonnalChannel = Response::where('user_id', $user->id)
                                                          ->where('has_responded', 1)
                                                          ->first();
-            $julien = User::find($userToBroadCastOnPersonnalChannel->id);
-            if ($userToBroadCastOnPersonnalChannel) {
+            $julien = User::find($userToBroadCastOnPersonnalChannel->user_id);
+            if ($julien) {
                 event(new Repondant([
                     'type' => 'LIVE_FEED',
                     'user' => $julien->toArray(),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use App\User;
 use App\Data;
+use Exception;
 use App\Events\TestEvent; 
 use Illuminate\Http\Request;
 use App\Http\Requests\DataRequest;
@@ -18,7 +19,7 @@ class DataController extends Controller
     // public function index(DataRequest $request, User $user)
     public function index(DataRequest $request, User $user)
     {
-    	try {
+    	try {            
     		$requestData = $request->all();
             $requestData['pulse'] = explode(',', $request->all()['pulse']);
             $requestData['spo2'] = explode(',', $request->all()['spo2']);
@@ -39,7 +40,7 @@ class DataController extends Controller
             ]));
     		return HttpHelper::json(['message' => 'The data was saved successfully'], 200);
     	} catch (Exception $e) {
-    		return HttpHelper::json(['message' => 'An error occured !'], 500);
+    		return HttpHelper::json(['message' => $e->getMessage()], 500);
     	}
     }
 }

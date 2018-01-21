@@ -141,6 +141,7 @@ class HealthController extends Controller
             $response->user_id = $user->id;
             $response->respondant_id = $closerRespondant['respondant']['id'];
             $response->saveOrFail();
+            var_dump($closerRespondant['respondant']);
             event(new Repondant([
                 'type' => 'DYING',
                 'user' => $closerRespondant['respondant'],

@@ -42,7 +42,7 @@ class DataController extends Controller
             if ($userToBroadCastOnPersonnalChannel) {
                 event(new Repondant([
                     'type' => 'LIVE_FEED',
-                    'user' => $userToBroadCastOnPersonnalChannel,
+                    'user' => ['user' => $userToBroadCastOnPersonnalChannel],
                     'payload' => [
                         'data' => $responseData
                     ]

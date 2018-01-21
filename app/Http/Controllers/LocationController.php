@@ -19,10 +19,7 @@ class LocationController extends Controller
     		$user->latitude  = $data['latitude'] * 1000000;
     		$user->longitude = $data['longitude'] * 1000000;
     		$user->save();
-    		return HttpHelper::json([
-    			'user' => $user,
-    			'message' => 'The location was saved successfully ! :)'
-    		], 201);
+    		return HttpHelper::json(['message' => 'The location was saved successfully ! :)'], 201);
     	} catch (Exception $e) {
     		return HttpHelper::json([
     			'data' => null,

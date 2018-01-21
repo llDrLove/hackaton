@@ -34,7 +34,6 @@ class HealthController extends Controller
                                     $respondant->latitude / self::DIVIDER,
                                     $respondant->longitude / self::DIVIDER,
                                     'K');
-                var_dump($distance);
                 if ($respondant->latitude && 
                     $respondant->longitude &&
                     $distance < $closerRespondant['distance']) {
